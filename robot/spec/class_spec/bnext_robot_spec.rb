@@ -1,61 +1,60 @@
 require 'minitest/autorun'
+require 'vcr'
+require 'webmock/minitest'
+require 'yaml'
 require_relative '../../lib/ext_class/bnext_robot'
 
-week_rank = [
-    "給GOGORO 一個掌聲，勇於認錯是成功的第一步: http://www.bnext.com.tw/article/view/id/37530",
-    "Gogoro再推新車，這次價格只要62000元起: http://www.bnext.com.tw/article/view/id/37528",
-    "[專訪]Gogoro行銷副總彭明義：市場會不會給犯了錯的人一次機會？: http://www.bnext.com.tw/article/view/id/37546",
-    "只有聰明還不夠！成為 Google 重點栽培的人才，一定要有這4個能力: http://www.bnext.com.tw/article/view/id/37550",
-    "專業，就是用對方聽得懂的話，去告訴他不懂的事情: http://www.bnext.com.tw/article/view/id/37573",
-    "[數位書選]只要利潤讓你吃得起泡麵，就請大膽創業！麥肯錫顧問看見創業者的6項修練！: http://www.bnext.com.tw/article/view/id/37553",
-    "法國3D動畫師讓宮崎駿角色齊聚一堂，連《玩具總動員》導演都大喊：趕快雇用他！: http://www.bnext.com.tw/article/view/id/37552",
-    "如何在1年內讀60本書？: http://www.bnext.com.tw/article/view/id/37551"
-]
 day_rank = [
-    "專業，就是用對方聽得懂的話，去告訴他不懂的事情: http://www.bnext.com.tw/article/view/id/37573",
-    "Surface名氣愈來愈旺！微軟趁勝追擊推出首款自家筆電Surface Book: http://www.bnext.com.tw/article/view/id/37578",
-    "蘋果iPhone在美市佔續增，Android陣營當心: http://www.bnext.com.tw/article/view/id/37581",
-    "打入Tesla 生態圈，網路第一代創業家賀元再現江湖 !: http://www.bnext.com.tw/article/view/id/37580",
-    "棉花糖系統開放更新！Now on Tap秘密武器正式出關！: http://www.bnext.com.tw/article/view/id/37568",
-    "Evernote的啟示：少了這個前提，商業計畫再完美也沒用！: http://www.bnext.com.tw/ext_rss/view/id/985113",
-    "賈伯斯去世4年了！為了紀念他，庫克寫了封email給員工: http://www.bnext.com.tw/ext_rss/view/id/988425",
-    "你真的知道Retina是什麼嗎？那些蘋果創造出來的技術名詞，你知道多少？: http://www.bnext.com.tw/ext_rss/view/id/985760",
+    "台積電勝三星？iPhone 6s 的 A9處理器事件總整理: http://www.bnext.com.tw/ext_rss/view/id/996449",
+    "一台iPhone 6s竟有16種版本？性能有差異，消費者只能認了？: http://www.bnext.com.tw/ext_rss/view/id/1002363",
+    "傳華碩不滿？微軟自製筆電買氣旺、OEM廠或遭消滅？: http://www.bnext.com.tw/article/view/id/37652",
+    "[創業之國]幫百度、騰訊打天下的幕後推手：以色列最低調的獨角獸公司ironSource: http://www.bnext.com.tw/article/view/id/37618",
+    "Dell＋EMC 670億美元併購成最熱新聞，到底這場交易對企業市場有何影響？: http://www.bnext.com.tw/article/view/id/37630",
+    "Mac OS X El Capitan一次更新五套中文字型！蘋方體好亮眼，你發現了嗎？: http://www.bnext.com.tw/article/view/id/37639",
+    "全方位數位行銷人員如何養成？這八種能力一個都不能少！: http://www.bnext.com.tw/article/view/id/37640",
+    "Twitter宣布裁員8%，減少工程師數量為首要目標: http://www.bnext.com.tw/article/view/id/37646",
 ]
 
-describe "Get correct day rank articles" do
+week_rank = [
+    "台積電勝三星？iPhone 6s 的 A9處理器事件總整理: http://www.bnext.com.tw/ext_rss/view/id/996449",
+    "Excel記帳雲端進化！Google表單比記帳App還好用: http://www.bnext.com.tw/ext_rss/view/id/955360",
+    "如果你不幸得到一部 16GB 的 iPhone 6s……: http://www.bnext.com.tw/ext_rss/view/id/942311",
+    "一台iPhone 6s竟有16種版本？性能有差異，消費者只能認了？: http://www.bnext.com.tw/ext_rss/view/id/1002363",
+    "專業，就是用對方聽得懂的話，去告訴他不懂的事情: http://www.bnext.com.tw/article/view/id/37573",
+    "蘋果穩居冠軍、Facebook強勢增長、Paypal首度進榜！解讀2015全球百大品牌: http://www.bnext.com.tw/article/view/id/37607",
+    "圖解行動支付兩大模式，你的錢未來這樣用！: http://www.bnext.com.tw/article/view/id/37609",
+    "韓流退燒？LG：韓企全球地位動搖、市佔全面敗退: http://www.bnext.com.tw/article/view/id/37624"
+]
 
-    before do
-        @bnext_robot = BNextRobot.new
-        @bnext_robot.web_data = File.open( "../testfiles/mainpage/bnext_mainpage.html" ).read
-        @bnext_robot.analyze
-        @bnext_robot.init_rank_feeds
-    end
-
-    it 'has the right number of daily articles' do
-        @bnext_robot.day_rank_feeds.size.must_equal day_rank.size
-    end
-
-    it 'has the right content' do
-        content = @bnext_robot.day_rank_feeds.map { |feed| "#{feed.title}: #{feed.link}" }
-        content.must_equal day_rank
-    end
+VCR.configure do |config|
+    config.cassette_library_dir = '../testfiles/vcr_cassettes'
+    config.hook_into :webmock
 end
 
-describe "Get correct week rank articles" do
+VCR.use_cassette('bnext_mainpage') do
+    bnext_robot = BNextRobot.new
 
-    before do
-        @bnext_robot = BNextRobot.new
-        @bnext_robot.web_data = File.open( "../testfiles/mainpage/bnext_mainpage.html" ).read
-        @bnext_robot.analyze
-        @bnext_robot.init_rank_feeds
+    describe "Get correct day rank articles" do
+
+        it 'has the right number of daily articles' do
+            bnext_robot.day_rank_feeds.size.must_equal day_rank.size
+        end
+
+        it 'has the right content' do
+            content = bnext_robot.day_rank_feeds.map { |feed| "#{feed.title.force_encoding("utf-8")}: #{feed.link.force_encoding("utf-8")}" }
+            content.must_equal day_rank
+        end
     end
 
-    it 'has the right number of daily articles' do
-        @bnext_robot.week_rank_feeds.size.must_equal week_rank.size
-    end
+    describe "Get correct week rank articles" do
 
-    it 'has the right content' do
-        content = @bnext_robot.week_rank_feeds.map { |feed| "#{feed.title}: #{feed.link}" }
-        content.must_equal week_rank
+        it 'has the right number of daily articles' do
+            bnext_robot.week_rank_feeds.size.must_equal week_rank.size
+        end
+
+        it 'has the right content' do
+            content = bnext_robot.week_rank_feeds.map { |feed| "#{feed.title.force_encoding("utf-8")}: #{feed.link.force_encoding("utf-8")}" }
+            content.must_equal week_rank
+        end
     end
 end
