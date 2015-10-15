@@ -99,7 +99,7 @@ class ListFeed
   end
 
   def get_feed_path
-    path = @document.xpath(FEED_XPATH).map { &:text }
+    path = @document.xpath(FEED_XPATH).map { |id| id.text }
   end
 end
 
