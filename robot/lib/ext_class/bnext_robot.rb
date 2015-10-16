@@ -5,7 +5,7 @@ require_relative '../int_class/filter_condition'
 require 'oga'
 require 'open-uri'
 
-#BNextRobot Extract titles and links of daily/ weekly hot feeds.
+# BNextRobot Extract titles and links of daily/ weekly hot feeds.
 class BNextRobot
   include Crawler
   include FeedFilter
@@ -13,20 +13,20 @@ class BNextRobot
   attr_accessor :day_rank_feeds, :week_rank_feeds
 
   def initialize
-    load_page( "http://www.bnext.com.tw/" )
+    load_page('http://www.bnext.com.tw/')
     analyze
     init_rank_feeds
   end
 
   def analyze
-    cat_tags = @web_data.scan( /<li>.*?<\/li>/ )
-    atags = cat_tags.map { |x| x.match( /<a.*?<\/a>/ ).to_s }
-    hrefs = atags.map { |x| x.match( /href=\".*?\"/ ).to_s[7..-2] }
-    cat_names = atags.map { |x| x.match( />.+?</ ).to_s[1..-2] }
-    cats_pair = cat_names.zip( hrefs ).select { |n, ref| ref.start_with? "categories" }
+    cat_tags = @web_data.scan(/<li>.*?<\/li>/)
+    atags = cat_tags.map { |x| x.match(/<a.*?<\/a>/).to_s }
+    hrefs = atags.map { |x| x.match(/href=\".*?\"/).to_s[7..-2] }
+    cat_names = atags.map { |x| x.match(/>.+?</).to_s[1..-2] }
+    cats_pair = cat_names.zip(hrefs).select { |n, ref| ref.start_with? 'categories' }
 
-    @cats = Hash.new( false )
-    cats_pair.map { |n, ref| @cats[ n ] = @domain + ref }
+    @cats = Hash.new(false)
+    cats_pair.map { |n, ref| @cats[n] = @domain + ref }
     nil
   end
 
@@ -42,38 +42,38 @@ class BNextRobot
 
   def init_rank_feeds
     token_gen = ["//div[@id = '", "_rank']//a[@class = 'content']"]
-    document = Oga.parse_html( @web_data )
+    document = Oga.parse_html(@web_data)
 
-    day_rank_hrefs = document.xpath( token_gen.join( "day" ) + "/@href" ).map { |x| x.text }
-    week_rank_hrefs = document.xpath( token_gen.join( "week" ) + "/@href" ).map { |x| x.text }
+    day_rank_hrefs = document.xpath(token_gen.join('day') + '/@href').map(&:text)
+    week_rank_hrefs = document.xpath(token_gen.join('week') + '/@href').map(&:text)
 
-    day_rank_titles = document.xpath( token_gen.join( "day" ) ).map { |x| x.text }
-    week_rank_titles = document.xpath( token_gen.join( "week" ) ).map { |x| x.text }
+    day_rank_titles = document.xpath(token_gen.join('day')).map(&:text)
+    week_rank_titles = document.xpath(token_gen.join('week')).map(&:text)
 
-    day_rank = day_rank_titles.zip( day_rank_hrefs ).select { |title, href| href.start_with? "/" }
-    day_rank = day_rank.map { |title, href| [ title, @domain + href[1..-1] ] }
-    week_rank = week_rank_titles.zip( week_rank_hrefs ).select { |title, href| href.start_with? "/" }
-    week_rank = week_rank.map { |title, href| [ title, @domain + href[1..-1] ] }
+    day_rank = day_rank_titles.zip(day_rank_hrefs).select { |title, href| href.start_with? '/' }
+    day_rank = day_rank.map { |title, href| [title, @domain + href[1..-1]] }
+    week_rank = week_rank_titles.zip(week_rank_hrefs).select { |title, href| href.start_with? '/' }
+    week_rank = week_rank.map { |title, href| [title, @domain + href[1..-1]] }
 
-    @day_rank_feeds = day_rank.map { |title, href| Feed.new( title, "", "", [], href ) }
-    @week_rank_feeds = week_rank.map { |title, href| Feed.new( title, "", "", [], href ) }
+    @day_rank_feeds = day_rank.map { |title, href| Feed.new(title, "", "", [], href) }
+    @week_rank_feeds = week_rank.map { |title, href| Feed.new(title, "", "", [], href) }
     nil
   end
 
-  def get_feeds( cat, max_num )
+  def get_feeds(cat, max_num)
     cur_page = 1
     feeds = []
 
     until feeds.length > max_num || cur_page > max_num
-      feeds.concat( _get_feeds( cat, cur_page ) )
+      feeds.concat(get_feeds(cat, cur_page))
       cur_page += 1
     end
 
     feeds
   end
 
-  def _get_feeds( cat, page_no )
-  # TODO: parse all feeds @ page: page_no
+  def get_feeds(cat, page_no)
+    # TODO: parse all feeds @ page: page_no
     nil
   end
 end
@@ -88,7 +88,7 @@ class ListFeed
   end
 
   def path
-    @path ||= get_feed_path
+    @path ||= extract_feed_path
   end
 
   private
@@ -98,8 +98,8 @@ class ListFeed
     @document = Oga.parse_html(open(url))
   end
 
-  def get_feed_path
-    path = @document.xpath(FEED_XPATH).map { |id| id.text }
+  def extract_feed_path
+    @document.xpath(FEED_XPATH).map(&:text)
   end
 end
 
@@ -133,10 +133,14 @@ class GetFeedDetails
     content = @document.xpath(CONTENT_XPATH).text.force_encoding('utf-8')
     tags = @document.xpath(TAG_XPATH).map { |i| i.text.force_encoding('utf-8') }
 
-    author = author.gsub(/撰文者：/, '')
-    date = date.gsub(/發表日期：/, '')
-        
-    feed_details = Hash["title" => title, "author" => author, "date" => date, "content" => content, "tags" => tags]
+    author = author.gsub(/撰文者：/, '') # remove useless wording
+    date = date.gsub(/發表日期：/, '') # remove useless wording
+
+    Hash[title: title,
+         author: author,
+         date: date,
+         content: content,
+         tags: tags]
   end
 end
 
