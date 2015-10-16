@@ -110,6 +110,7 @@ class GetFeedDetails
   TAG_XPATH = "//a[contains(@class, 'tag_link')]"
   INFO_XPATH = "//span[contains(@class, 'info')]"
   CONTENT_XPATH = "//div[contains(@class, 'content htmlview')]"
+  IMGS_XPATH = "//div[contains(@class, 'content htmlview')]/p/img/@src"
 
   def initialize(feed_id)
     parse_html(feed_id)
@@ -118,8 +119,6 @@ class GetFeedDetails
   def feed
     @feed ||= extract_feed
   end
-
-  private
 
   def parse_html(feed_id)
     link = "#{URL}#{feed_id}"
@@ -132,15 +131,15 @@ class GetFeedDetails
     date = @document.xpath(INFO_XPATH)[1].text.force_encoding('utf-8')
     content = @document.xpath(CONTENT_XPATH).text.force_encoding('utf-8')
     tags = @document.xpath(TAG_XPATH).map { |i| i.text.force_encoding('utf-8') }
-
+    imgs = @document.xpath(IMGS_XPATH).map(&:text)
     author = author.gsub(/撰文者：/, '') # remove useless wording
     date = date.gsub(/發表日期：/, '') # remove useless wording
-
     Hash[title: title,
          author: author,
          date: date,
          content: content,
-         tags: tags]
+         tags: tags,
+         imgs: imgs]
   end
 end
 
