@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require_relative '../lib/ext_class/bnext_robot'
+
+fail ArgumentError, "Usage:  bnext_robot [week/day]\n" if ARGV.count == 0
+
+bnext_robot = BNextRobot.new
+
+type = ARGV[0]
+if type == "week"
+  bnext_robot.show_week_rank
+elsif type == "day"
+  bnext_robot.show_day_rank
+else
+  puts "Please type week or day"
+end
