@@ -127,12 +127,14 @@ class GetFeedDetails
   end
 
   def extract_feed
-    # We should clean up the texts at some point (e.g. remove "撰文者" & "發文日期").
     title = @document.xpath(TITLE_XPATH).text.force_encoding('utf-8')
     author = @document.xpath(INFO_XPATH)[0].text.force_encoding('utf-8')
     date = @document.xpath(INFO_XPATH)[1].text.force_encoding('utf-8')
     content = @document.xpath(CONTENT_XPATH).text.force_encoding('utf-8')
     tags = @document.xpath(TAG_XPATH).map { |i| i.text.force_encoding('utf-8') }
+
+    author = author.gsub(/撰文者：/, '')
+    date = date.gsub(/發表日期：/, '')
         
     feed_details = Hash["title" => title, "author" => author, "date" => date, "content" => content, "tags" => tags]
   end
