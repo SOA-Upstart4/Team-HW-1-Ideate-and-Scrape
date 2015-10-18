@@ -5,25 +5,25 @@ require 'yaml'
 require_relative '../../lib/ext_class/bnext_robot'
 
 day_rank = [
-  "傳華碩不滿？微軟自製筆電買氣旺、OEM廠或遭消滅？: http://www.bnext.com.tw/article/view/id/37652",
-  "消費者眼球都在哪？世界即時通訊及社群媒體使用情形分析: http://www.bnext.com.tw/article/view/id/37667",
-  "國內第三方支付往前走！歐付寶獲首張電子支付專營執照，支付App年底上線: http://www.bnext.com.tw/article/view/id/37658",
-  "讓新創團隊「犯得起錯」！鴻海與阿里巴巴推創客製造平台「淘富成真」: http://www.bnext.com.tw/article/view/id/37648",
-  "Twitch共同創辦人Kevin Lin：創業是件苦差事，你必須要面對這8個修煉: http://www.bnext.com.tw/article/view/id/37657",
-  "Twitter宣布裁員8%，減少工程師數量為首要目標: http://www.bnext.com.tw/article/view/id/37646",
-  "台積電勝三星？iPhone 6s 的 A9處理器事件總整理: http://www.bnext.com.tw/ext_rss/view/id/996449",
-  "一站搜尋20個常用圖庫！用LibreStock下載萬張高畫質CC0授權免費相片素材: http://www.bnext.com.tw/ext_rss/view/id/1004823"
+  "郭台銘投資製造的雲馬X1被爆抄很大，雲造科技回應：並無專利侵權行為: http://www.bnext.com.tw/article/view/id/37685",
+  "各位低持股的老闆皮緊一點！狼來了-談矽品案: http://www.bnext.com.tw/article/view/id/37666",
+  "Facebook開暗門，透過背景重新整理功能榨乾iPhone電力: http://www.bnext.com.tw/article/view/id/37684",
+  "高招！矽品提收購無效之訴，訴訟若拖2~3年不利日月光: http://www.bnext.com.tw/article/view/id/37672",
+  "台灣首次大型VR娛樂應用登場！中華職棒總冠軍賽，Lamigo桃猿熱鬧開打！: http://www.bnext.com.tw/article/view/id/37683",
+  "Gogoro創辦人陸學森：過去20年來，我學會的10件事。: http://www.bnext.com.tw/article/view/id/37688",
+  "被雷軍及郭台銘都看好的智慧電動車雲馬X1！90後創業家玩出新設計: http://www.bnext.com.tw/article/view/id/37663",
+  "台積電版 iPhone 秒殺三星版？別急，來看看這個測試: http://www.bnext.com.tw/ext_rss/view/id/1010354"
 ]
 
 week_rank = [
-  "台積電勝三星？iPhone 6s 的 A9處理器事件總整理: http://www.bnext.com.tw/ext_rss/view/id/996449", 
+  "台積電勝三星？iPhone 6s 的 A9處理器事件總整理: http://www.bnext.com.tw/ext_rss/view/id/996449",
   "Excel記帳雲端進化！Google表單比記帳App還好用: http://www.bnext.com.tw/ext_rss/view/id/955360",
-  "如果你不幸得到一部 16GB 的 iPhone 6s……: http://www.bnext.com.tw/ext_rss/view/id/942311",
   "一台iPhone 6s竟有16種版本？性能有差異，消費者只能認了？: http://www.bnext.com.tw/ext_rss/view/id/1002363",
+  "傳華碩不滿？微軟自製筆電買氣旺、OEM廠或遭消滅？: http://www.bnext.com.tw/article/view/id/37652",
   "蘋果穩居冠軍、Facebook強勢增長、Paypal首度進榜！解讀2015全球百大品牌: http://www.bnext.com.tw/article/view/id/37607",
   "圖解行動支付兩大模式，你的錢未來這樣用！: http://www.bnext.com.tw/article/view/id/37609",
-  "傳華碩不滿？微軟自製筆電買氣旺、OEM廠或遭消滅？: http://www.bnext.com.tw/article/view/id/37652",
-  "韓流退燒？LG：韓企全球地位動搖、市佔全面敗退: http://www.bnext.com.tw/article/view/id/37624"
+  "韓流退燒？LG：韓企全球地位動搖、市佔全面敗退: http://www.bnext.com.tw/article/view/id/37624",
+  "消費者眼球都在哪？世界即時通訊及社群媒體使用情形分析: http://www.bnext.com.tw/article/view/id/37667"
 ]
 
 tech_listfeed = [
@@ -59,14 +59,12 @@ bnext_feed_details = {
 }
 
 VCR.configure do |config|
-    config.cassette_library_dir = 'spec/testfiles/vcr_cassettes'
+    config.cassette_library_dir = '../testfiles/vcr_cassettes'
     config.hook_into :webmock
 end
 
 VCR.use_cassette('bnext_mainpage') do
   bnext_robot = BNextRobot.new
-  bnext_listfeed = ListFeed.new("tech", 1)
-  bnext_getfeeddetails = GetFeedDetails.new(bnext_listfeed.path[0])
 
   describe "Get correct day rank articles" do
 
@@ -91,22 +89,14 @@ VCR.use_cassette('bnext_mainpage') do
       content.must_equal week_rank
     end
   end
+end
 
+VCR.use_cassette('bnext_techpage') do
+  bnext_robot = BNextRobot.new.get_feeds("tech", 1)
   describe "Get correct list of each category" do
 
     it 'get right number of feeds' do
-      bnext_listfeed.path.size.must_equal 20
-    end
-
-    it 'has right feeds path' do
-      bnext_listfeed.path.must_equal tech_listfeed
-    end
-  end
-
-  describe "Get correct feed content" do
-
-    it 'has right content' do
-      bnext_getfeeddetails.feed.must_equal bnext_feed_details
+      bnext_robot.size.must_equal 20
     end
   end
 end
