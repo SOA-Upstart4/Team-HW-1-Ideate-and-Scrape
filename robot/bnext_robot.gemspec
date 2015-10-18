@@ -2,7 +2,7 @@ $LOAD_PATH.push File.expand_path('../robot', __FILE__)
 
 Gem::Specification.new do |s|
   s.name        =  'bnext_robot'
-  s.version     =  '1.0.0'
+  s.version     =  '0.1.0'
   s.date        =  '2015-10-18'
   s.executables << 'bnext_robot'
   s.summary     =  'Web scrapy for Business Next'
@@ -19,5 +19,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'vcr'
   s.add_development_dependency 'webmock'
   s.add_runtime_dependency 'oga'
-  s.add_runtime_dependency 'xpath'
 end
