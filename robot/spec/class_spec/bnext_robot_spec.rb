@@ -66,6 +66,5 @@ VCR.use_cassette('bnext_techpage') do
     it 'get right number of feeds' do
       bnext_tech.size.must_equal 20
     end
-
   end
 end
