@@ -67,18 +67,6 @@ class BNextRobot
     nil
   end
 
-  def get_feeds(cat, max_num)
-    cur_page = 1
-    feeds = []
-
-    until feeds.length > max_num || cur_page > max_num
-      feeds.concat(get_feeds(cat, cur_page))
-      cur_page += 1
-    end
-
-    feeds
-  end
-
   def get_feeds(cat, page_no)
     # TODO: parse all feeds @ page: page_no
     query_url = @domain + "categories/#{cat}/?p=#{page_no}"
