@@ -3,7 +3,7 @@ $LOAD_PATH.push File.expand_path('../robot', __FILE__)
 Gem::Specification.new do |s|
   s.name        =  'bnext_robot'
   s.version     =  '1.0.0'
-  s.date        =  ''2015-10-18''
+  s.date        =  '2015-10-18'
   s.executables << 'bnext_robot'
   s.summary     =  'Web scrapy for Business Next'
   s.description =  'Web scrapy for Business Next, including showing day/week rank and feeds extraction'
