@@ -10,6 +10,13 @@ class BNextRobot
   include Crawler
   include FeedFilter
 
+  FEED_XPATH = "//a[contains(@class, 'item_title block_link')]/@href"
+  TITLE_XPATH = "//div[contains(@class, 'main_title')]"
+  TAG_XPATH = "//a[contains(@class, 'tag_link')]"
+  INFO_XPATH = "//span[contains(@class, 'info')]"
+  CONTENT_XPATH = "//div[contains(@class, 'content htmlview')]"
+  IMGS_XPATH = "//div[contains(@class, 'content htmlview')]/p/img/@src"
+
   attr_accessor :day_rank_feeds, :week_rank_feeds
 
   def initialize
@@ -55,8 +62,8 @@ class BNextRobot
     week_rank = week_rank_titles.zip(week_rank_hrefs).select { |title, href| href.start_with? '/' }
     week_rank = week_rank.map { |title, href| [title, @domain + href[1..-1]] }
 
-    @day_rank_feeds = day_rank.map { |title, href| Feed.new(title, "", "", [], href) }
-    @week_rank_feeds = week_rank.map { |title, href| Feed.new(title, "", "", [], href) }
+    @day_rank_feeds = day_rank.map { |title, href| Feed.new(title, "", "", [], href, "") }
+    @week_rank_feeds = week_rank.map { |title, href| Feed.new(title, "", "", [], href, "") }
     nil
   end
 
@@ -74,87 +81,27 @@ class BNextRobot
 
   def get_feeds(cat, page_no)
     # TODO: parse all feeds @ page: page_no
-    nil
+    query_url = @domain + "categories/#{cat}/?p=#{page_no}"
+    document = Oga.parse_html(open(query_url))
+    path = document.xpath(FEED_XPATH).map(&:text)
+    # path.each do |feed_id|
+    #   feed = _extract_feed(feed_id)
+    #   puts "Title: #{feed.title}"
+    #   puts "Author: #{feed.author}"
+    #   puts "Date: #{feed.date}"
+    #   puts "Tags: " + feed.tags.join(", ")
+    # end
+    path.map { |feed_id| _extract_feed(feed_id) }
+  end
+
+  def _extract_feed(feed_id)
+    query_url = @domain[0..-2] + "#{feed_id}"
+    document = Oga.parse_html(open(query_url))
+    title = document.xpath(TITLE_XPATH).text
+    author = document.xpath(INFO_XPATH)[0].text.gsub("撰文者：".force_encoding("ascii-8bit"), "")
+    date = document.xpath(INFO_XPATH)[1].text.gsub("發表日期：".force_encoding("ascii-8bit"), "")
+    content = document.xpath(CONTENT_XPATH).text
+    tags = document.xpath(TAG_XPATH).map(&:text)
+    Feed.new(title, author, date, tags, query_url, content)
   end
 end
-
-# ListFeed Extract each feed's unique path in a certain category
-class ListFeed
-  URL = 'http://www.bnext.com.tw/categories'
-  FEED_XPATH = "//a[contains(@class, 'item_title block_link')]/@href"
-
-  def initialize(cat, page_no)
-    parse_html(cat, page_no)
-  end
-
-  def path
-    @path ||= extract_feed_path
-  end
-
-  private
-
-  def parse_html(cat, page_no)
-    url = "#{URL}/#{cat}/?p=#{page_no}"
-    @document = Oga.parse_html(open(url))
-  end
-
-  def extract_feed_path
-    @document.xpath(FEED_XPATH).map(&:text)
-  end
-end
-
-# GetFeedDetails extracts title, author, date, content, and tags from the feed.
-class GetFeedDetails
-  URL = 'http://www.bnext.com.tw'
-  TITLE_XPATH = "//div[contains(@class, 'main_title')]"
-  TAG_XPATH = "//a[contains(@class, 'tag_link')]"
-  INFO_XPATH = "//span[contains(@class, 'info')]"
-  CONTENT_XPATH = "//div[contains(@class, 'content htmlview')]"
-  IMGS_XPATH = "//div[contains(@class, 'content htmlview')]/p/img/@src"
-
-  def initialize(feed_id)
-    parse_html(feed_id)
-  end
-
-  def feed
-    @feed ||= extract_feed
-  end
-
-  def parse_html(feed_id)
-    link = "#{URL}#{feed_id}"
-    @document = Oga.parse_html(open(link))
-  end
-
-  def extract_feed
-    title = @document.xpath(TITLE_XPATH).text.force_encoding('utf-8')
-    author = @document.xpath(INFO_XPATH)[0].text.force_encoding('utf-8')
-    date = @document.xpath(INFO_XPATH)[1].text.force_encoding('utf-8')
-    content = @document.xpath(CONTENT_XPATH).text.force_encoding('utf-8')
-    tags = @document.xpath(TAG_XPATH).map { |i| i.text.force_encoding('utf-8') }
-    imgs = @document.xpath(IMGS_XPATH).map(&:text)
-    author = author.gsub(/撰文者：/, '') # remove useless wording
-    date = date.gsub(/發表日期：/, '') # remove useless wording
-    Hash[title: title,
-         author: author,
-         date: date,
-         content: content,
-         tags: tags,
-         imgs: imgs]
-  end
-end
-
-## Executable file (run_crawler) sample ##
-
-## codes below
-# cat = ARGV[0]
-# page_no = ARGV[1]
-
-# feed_found = ListFeed.new(cat, page_no).path
-
-# feed_found.each { |id_path|
-#   feeds_detail = GetFeedDetails.new(id_path).feed
-#   puts "#{feeds_detail}"
-# }
-
-## Executable command line sample ##
-# $ run_crawler internet 3
