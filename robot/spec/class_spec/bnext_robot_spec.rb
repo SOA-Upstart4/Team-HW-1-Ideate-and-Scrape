@@ -26,11 +26,6 @@ week_rank = [
   "消費者眼球都在哪？世界即時通訊及社群媒體使用情形分析: http://www.bnext.com.tw/article/view/id/37667"
 ]
 
-
-bnext_feed_details = {
-
-}
-
 VCR.configure do |config|
     config.cassette_library_dir = '../testfiles/vcr_cassettes'
     config.hook_into :webmock
@@ -66,15 +61,11 @@ end
 
 VCR.use_cassette('bnext_techpage') do
   bnext_tech = BNextRobot.new.get_feeds("tech", 1)
-
   describe "Get correct list of each category" do
 
     it 'get right number of feeds' do
       bnext_tech.size.must_equal 20
     end
 
-    it 'has right feeds id' do
-      bnext_tech.must_equal bnext_feed_details
-    end
   end
 end
