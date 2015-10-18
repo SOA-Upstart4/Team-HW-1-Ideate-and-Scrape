@@ -102,7 +102,7 @@ class BNextRobot
     date = document.xpath(INFO_XPATH)[1].text.gsub('發表日期：'.force_encoding('ascii-8bit'), '')
     content = document.xpath(CONTENT_XPATH).text
     tags = document.xpath(TAG_XPATH).map(&:text)
-    imgs = document.xpath(IMGS_XPATH).text
+    imgs = document.xpath(IMGS_XPATH).map(&:text)
     Feed.new(title, author, date, tags, query_url, content, imgs)
   end
 end
