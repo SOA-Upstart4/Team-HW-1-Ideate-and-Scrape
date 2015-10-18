@@ -1,0 +1,9 @@
+language: ruby
+rvm:
+  - ruby-head
+  - jruby-head
+branches:
+  only:
+    - dev
+script:
+  - cd robot && rake
