@@ -1,4 +1,4 @@
-# Business Next Scraper [![Build Status](https://travis-ci.org/SOA-Upstart4/Team-HW-1-Ideate-and-Scrape.svg?branch=dev)](https://travis-ci.org/SOA-Upstart4/Team-HW-1-Ideate-and-Scrape)
+# Business Next Scraper [![Gem Version](https://badge.fury.io/rb/bnext_robot.svg)](https://badge.fury.io/rb/bnext_robot) [![Build Status](https://travis-ci.org/SOA-Upstart4/Team-HW-1-Ideate-and-Scrape.svg?branch=dev)](https://travis-ci.org/SOA-Upstart4/Team-HW-1-Ideate-and-Scrape)
 ##Overview
 This is a scraper that collects articles and article-related information from the website 
 [Business Next](http://www.bnext.com.tw/).
