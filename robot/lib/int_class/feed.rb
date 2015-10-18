@@ -14,4 +14,10 @@ class Feed
         @imgs = imgs
     end
 
+    def to_hash()
+    	symbs = %w(title author date tags link content imgs)
+    	values = [@title, @author, @date, @tags, @link, @content, @imgs]
+    	Hash[symbs.zip(values)]
+    end
+
 end
