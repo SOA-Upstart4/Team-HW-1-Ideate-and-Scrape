@@ -1,6 +1,0 @@
-language: ruby
-rvm:
-  - ruby-head
-branches:
-  only:
-    - dev
