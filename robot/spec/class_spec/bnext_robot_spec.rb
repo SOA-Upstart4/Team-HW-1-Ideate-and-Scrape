@@ -31,6 +31,8 @@ VCR.configure do |config|
     config.hook_into :webmock
 end
 
+bnext_robot = nil
+
 VCR.use_cassette('bnext_mainpage') do
   bnext_robot = BNextRobot.new
 
@@ -60,7 +62,7 @@ VCR.use_cassette('bnext_mainpage') do
 end
 
 VCR.use_cassette('bnext_techpage') do
-  bnext_tech = BNextRobot.new.get_feeds("tech", 1)
+  bnext_tech = bnext_robot.get_feeds("tech", 1)
   describe "Get correct list of each category" do
 
     it 'get right number of feeds' do
