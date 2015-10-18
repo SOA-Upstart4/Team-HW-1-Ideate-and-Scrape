@@ -1,61 +1,112 @@
 require 'minitest/autorun'
+require 'vcr'
+require 'webmock/minitest'
+require 'yaml'
 require_relative '../../lib/ext_class/bnext_robot'
 
-week_rank = [
-    "給GOGORO 一個掌聲，勇於認錯是成功的第一步: http://www.bnext.com.tw/article/view/id/37530",
-    "Gogoro再推新車，這次價格只要62000元起: http://www.bnext.com.tw/article/view/id/37528",
-    "[專訪]Gogoro行銷副總彭明義：市場會不會給犯了錯的人一次機會？: http://www.bnext.com.tw/article/view/id/37546",
-    "只有聰明還不夠！成為 Google 重點栽培的人才，一定要有這4個能力: http://www.bnext.com.tw/article/view/id/37550",
-    "專業，就是用對方聽得懂的話，去告訴他不懂的事情: http://www.bnext.com.tw/article/view/id/37573",
-    "[數位書選]只要利潤讓你吃得起泡麵，就請大膽創業！麥肯錫顧問看見創業者的6項修練！: http://www.bnext.com.tw/article/view/id/37553",
-    "法國3D動畫師讓宮崎駿角色齊聚一堂，連《玩具總動員》導演都大喊：趕快雇用他！: http://www.bnext.com.tw/article/view/id/37552",
-    "如何在1年內讀60本書？: http://www.bnext.com.tw/article/view/id/37551"
-]
 day_rank = [
-    "專業，就是用對方聽得懂的話，去告訴他不懂的事情: http://www.bnext.com.tw/article/view/id/37573",
-    "Surface名氣愈來愈旺！微軟趁勝追擊推出首款自家筆電Surface Book: http://www.bnext.com.tw/article/view/id/37578",
-    "蘋果iPhone在美市佔續增，Android陣營當心: http://www.bnext.com.tw/article/view/id/37581",
-    "打入Tesla 生態圈，網路第一代創業家賀元再現江湖 !: http://www.bnext.com.tw/article/view/id/37580",
-    "棉花糖系統開放更新！Now on Tap秘密武器正式出關！: http://www.bnext.com.tw/article/view/id/37568",
-    "Evernote的啟示：少了這個前提，商業計畫再完美也沒用！: http://www.bnext.com.tw/ext_rss/view/id/985113",
-    "賈伯斯去世4年了！為了紀念他，庫克寫了封email給員工: http://www.bnext.com.tw/ext_rss/view/id/988425",
-    "你真的知道Retina是什麼嗎？那些蘋果創造出來的技術名詞，你知道多少？: http://www.bnext.com.tw/ext_rss/view/id/985760",
+  "傳華碩不滿？微軟自製筆電買氣旺、OEM廠或遭消滅？: http://www.bnext.com.tw/article/view/id/37652",
+  "消費者眼球都在哪？世界即時通訊及社群媒體使用情形分析: http://www.bnext.com.tw/article/view/id/37667",
+  "國內第三方支付往前走！歐付寶獲首張電子支付專營執照，支付App年底上線: http://www.bnext.com.tw/article/view/id/37658",
+  "讓新創團隊「犯得起錯」！鴻海與阿里巴巴推創客製造平台「淘富成真」: http://www.bnext.com.tw/article/view/id/37648",
+  "Twitch共同創辦人Kevin Lin：創業是件苦差事，你必須要面對這8個修煉: http://www.bnext.com.tw/article/view/id/37657",
+  "Twitter宣布裁員8%，減少工程師數量為首要目標: http://www.bnext.com.tw/article/view/id/37646",
+  "台積電勝三星？iPhone 6s 的 A9處理器事件總整理: http://www.bnext.com.tw/ext_rss/view/id/996449",
+  "一站搜尋20個常用圖庫！用LibreStock下載萬張高畫質CC0授權免費相片素材: http://www.bnext.com.tw/ext_rss/view/id/1004823"
 ]
 
-describe "Get correct day rank articles" do
+week_rank = [
+  "台積電勝三星？iPhone 6s 的 A9處理器事件總整理: http://www.bnext.com.tw/ext_rss/view/id/996449", 
+  "Excel記帳雲端進化！Google表單比記帳App還好用: http://www.bnext.com.tw/ext_rss/view/id/955360",
+  "如果你不幸得到一部 16GB 的 iPhone 6s……: http://www.bnext.com.tw/ext_rss/view/id/942311",
+  "一台iPhone 6s竟有16種版本？性能有差異，消費者只能認了？: http://www.bnext.com.tw/ext_rss/view/id/1002363",
+  "蘋果穩居冠軍、Facebook強勢增長、Paypal首度進榜！解讀2015全球百大品牌: http://www.bnext.com.tw/article/view/id/37607",
+  "圖解行動支付兩大模式，你的錢未來這樣用！: http://www.bnext.com.tw/article/view/id/37609",
+  "傳華碩不滿？微軟自製筆電買氣旺、OEM廠或遭消滅？: http://www.bnext.com.tw/article/view/id/37652",
+  "韓流退燒？LG：韓企全球地位動搖、市佔全面敗退: http://www.bnext.com.tw/article/view/id/37624"
+]
 
-    before do
-        @bnext_robot = BNextRobot.new
-        @bnext_robot.web_data = File.open( "../testfiles/mainpage/bnext_mainpage.html" ).read
-        @bnext_robot.analyze
-        @bnext_robot.init_rank_feeds
-    end
+tech_listfeed = [
+  "/article/view/id/37672",
+  "/article/view/id/37664",
+  "/article/view/id/37663",
+  "/article/view/id/37666",
+  "/article/view/id/37662",
+  "/article/view/id/37660",
+  "/article/view/id/37661",
+  "/article/view/id/37659",
+  "/article/view/id/37652",
+  "/article/view/id/37649",
+  "/article/view/id/37635",
+  "/article/view/id/37637",
+  "/article/view/id/37634",
+  "/article/view/id/37633",
+  "/article/view/id/37631",
+  "/article/view/id/37630",
+  "/article/view/id/37629",
+  "/article/view/id/37612",
+  "/article/view/id/37624",
+  "/article/view/id/37604"
+]
 
-    it 'has the right number of daily articles' do
-        @bnext_robot.day_rank_feeds.size.must_equal day_rank.size
-    end
+bnext_feed_details = {
+  "title"=>"高招！矽品提收購無效之訴，訴訟若拖2~3年不利日月光",
+  "author"=>"撰文者：MoneyDJ",
+  "date"=>"發表日期：2015/10/16",
+  "content"=>
+  "\r\n            矽品精密15日上午在臨時股東會沒通過引進鴻海成為結盟股東的議案，矽品才敗下陣來；晚間突公告已於今日上午同步在高雄地方法院確認日月光請求於股東名簿登載為矽品股東的請求權不存在，即向法院請求日月光公開收購無效。熟悉法條的台灣科技業法務主管表示，矽品此舉為高招，因法院接受該案後，雙方在司法訴訟上你來我往、至少耗費2~3年時間，屆時整個半導體環境都已轉變，日月光也會失去尋求併購矽品的最佳時機。\n\n\n\n矽品臨時股東會中，兩個議案都未獲得股東過半同意，「鴻矽戀」確定破局；日月光今日上午才「風光」在股權爭奪案中確定第一大股東身份，才高興不到半天，馬上面臨收購無效的訴訟，明天日月光股價可能會有反壓。\n\n（一）矽品提收購無效之訴，以拖待變：\n\n竹科的法務主管指出，相對日月光之前提出的「假處分」阻止或延後臨時股東會的召開。矽品此次提收購無效訴訟案，比日月光更為高招。\n\n假處分只是法院的「程序」，法院的決定時間很短，而收購無效訴訟為實質興訟，通常這一類民事案件一走就是2年起跳，可能還會拖個3年時間。\n\n提起訴訟，可以替矽品爭取到2~3年的時間，讓矽品可以找到更多的「白衣騎士」等外援，改變股權結構的反擊手段將會更為完善。\n\n（二）矽品提收購無效之訴，能伺機再結盟鴻海：\n\n矽品目前最主要盟友是鴻海精密。提起該訴訟之後，「鴻矽戀」將可以以不同型態再續前緣。\n\n只要雙方有默契，矽品可以讓鴻海以更高的價格「公開收購」其他75%的部份股權，還是有機會讓「白衣騎士」的鴻海取得更多的股權來牽制日月光。\n\n（三）矽品、日月光已進入訴訟階段，整併的可能性已低：\n\n券商分析師則認為，從今日矽品臨時股東會員工的抗議，還有矽品董事長林文伯的發言「會堅持到底、繼續抗爭下去。」到今日晚間公告將走到法律訴訟的「魚死網破」態度。\n\n國內分析師斷言，矽品經營層完全無心與日月光整併，未來時間一拖長，整個紅色供應鏈與台廠互動關係、還有美、日、歐等半導體競爭環境已轉變了，日月光是否還有時間等待完成收購矽品，都充滿了不確定因素。\n\n日月光也回應，待收到法院正式函文，再予回應。\n\n文章出處：MoneyDJ 財經知識庫\n\r\n        ",
+  "tags"=>["鴻海", "購併", "矽品", "日月光"]
+}
 
-    it 'has the right content' do
-        content = @bnext_robot.day_rank_feeds.map { |feed| "#{feed.title}: #{feed.link}" }
-        content.must_equal day_rank
-    end
+VCR.configure do |config|
+    config.cassette_library_dir = 'spec/testfiles/vcr_cassettes'
+    config.hook_into :webmock
 end
 
-describe "Get correct week rank articles" do
+VCR.use_cassette('bnext_mainpage') do
+  bnext_robot = BNextRobot.new
+  bnext_listfeed = ListFeed.new("tech", 1)
+  bnext_getfeeddetails = GetFeedDetails.new(bnext_listfeed.path[0])
 
-    before do
-        @bnext_robot = BNextRobot.new
-        @bnext_robot.web_data = File.open( "../testfiles/mainpage/bnext_mainpage.html" ).read
-        @bnext_robot.analyze
-        @bnext_robot.init_rank_feeds
-    end
+  describe "Get correct day rank articles" do
 
     it 'has the right number of daily articles' do
-        @bnext_robot.week_rank_feeds.size.must_equal week_rank.size
+      bnext_robot.day_rank_feeds.size.must_equal day_rank.size
     end
 
     it 'has the right content' do
-        content = @bnext_robot.week_rank_feeds.map { |feed| "#{feed.title}: #{feed.link}" }
-        content.must_equal week_rank
+      content = bnext_robot.day_rank_feeds.map { |feed| "#{feed.title.force_encoding("utf-8")}: #{feed.link.force_encoding("utf-8")}" }
+      content.must_equal day_rank
     end
+  end
+
+  describe "Get correct week rank articles" do
+
+    it 'has the right number of daily articles' do
+      bnext_robot.week_rank_feeds.size.must_equal week_rank.size
+    end
+
+    it 'has the right content' do
+      content = bnext_robot.week_rank_feeds.map { |feed| "#{feed.title.force_encoding("utf-8")}: #{feed.link.force_encoding("utf-8")}" }
+      content.must_equal week_rank
+    end
+  end
+
+  describe "Get correct list of each category" do
+
+    it 'get right number of feeds' do
+      bnext_listfeed.path.size.must_equal 20
+    end
+
+    it 'has right feeds path' do
+      bnext_listfeed.path.must_equal tech_listfeed
+    end
+  end
+
+  describe "Get correct feed content" do
+
+    it 'has right content' do
+      bnext_getfeeddetails.feed.must_equal bnext_feed_details
+    end
+  end
 end
