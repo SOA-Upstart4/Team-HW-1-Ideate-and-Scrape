@@ -27,7 +27,7 @@ week_rank = [
 ]
 
 VCR.configure do |config|
-    config.cassette_library_dir = '../testfiles/vcr_cassettes'
+    config.cassette_library_dir = './spec/testfiles/vcr_cassettes'
     config.hook_into :webmock
 end
 
