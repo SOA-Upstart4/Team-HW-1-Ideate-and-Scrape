@@ -72,14 +72,16 @@ class BNextRobot
     query_url = @domain + "categories/#{cat}/?p=#{page_no}"
     document = Oga.parse_html(open(query_url))
     path = document.xpath(FEED_XPATH).map(&:text)
-    # path.each do |feed_id|
-    #   feed = _extract_feed(feed_id)
-    #   puts "Title: #{feed.title}"
-    #   puts "Author: #{feed.author}"
-    #   puts "Date: #{feed.date}"
-    #   puts "Tags: " + feed.tags.join(", ")
-    # end
     path.map { |feed_id| _extract_feed(feed_id) }
+    path.each do |feed_id|
+       feed = _extract_feed(feed_id)
+       puts "Title: #{feed.title}"
+       puts "Author: #{feed.author}"
+       puts "Date: #{feed.date}"
+       puts "Tags: " + feed.tags.join(", ")
+       puts "Content: #{feed.content}"
+       puts "======================================"
+     end
   end
 
   def _extract_feed(feed_id)
