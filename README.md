@@ -85,7 +85,16 @@ Evernote的啟示：少了這個前提，商業計畫再完美也沒用！: http
 你真的知道Retina是什麼嗎？那些蘋果創造出來的技術名詞，你知道多少？: http://www.bnext.com.tw/ext_rss/view/id/985760
 ```
 ### ※ Sample results of get_feeds
-**Get feeds with Hash format**
+**Get feeds with a structral format**
+
+Note that each element in the array is a `Feed` object, every `Feed` object has several attributes, including:
+
+- `title`: the title of the article
+- `author`: the author of the article
+- `date`: the posted date of the article
+- `content`: the whole content the article contains
+- `tags`: the tags tagged inside the article to be searched
+- `imgs`: all images urls embedded inside the article
 
 ```
 [{
