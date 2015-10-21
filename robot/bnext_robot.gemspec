@@ -1,4 +1,4 @@
-$LOAD_PATH.push File.expand_path('../robot', __FILE__)
+$LOAD_PATH.push File.expand_path('../lib', __FILE__)
 require 'ext_class/bnext_version'
 
 Gem::Specification.new do |s|
