@@ -17,7 +17,7 @@ when 'feed'
   puts '[網路]: internet  [科技]: tech    [行銷]: marketing'
   puts '[創業]: startup   [人物]: people  [技能]: skill'
   print 'Category: '
-  cat = $stdin.readline.chomp
+  cat = $stdin.readline.chomp  
   print 'Page number: '
   page_no = $stdin.readline.chomp
   feed_found = bnext_robot.get_feeds(cat, page_no)
