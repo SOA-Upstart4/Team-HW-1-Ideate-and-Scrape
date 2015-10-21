@@ -36,21 +36,40 @@ This is a scraper that collects articles and article-related information from th
                 └── bnext_techpage.yml
 ```
 ##Usage of scraper
-###1. Initialize a scrapy robot
+Install it with the following command:
 
-```ruby
-bot = BNextRobot.new
+```
+gem install bnext_robot
 ```
 
-###2. Call the class methods
+Or else put it in your Gemfile as:
 
-```ruby 
-bot.show_day_rank
-# It will return *titles* and the *links* of daily hot news.
+```ruby
+gem bnext_robot
+```
 
+###0. Set your working directory
 
-bot.show_week_rank
-# It will return *titles* and the *links* of weekly hot news.
+```shell
+cd robot
+```
+
+###1. Call the class methods
+* Show the week ranking of articles.
+
+```bash
+bin/bnext_robot weekrank
+```
+
+* Show the day ranking of articles.
+
+```shell
+bin/bnext_robot dayrank
+```
+* Get feeds by selecting categories and page number.
+
+```shell
+bin/bnext_robot feed
 ```
 
 ### ※ Sample results of show\_day\_rank
@@ -66,6 +85,17 @@ Evernote的啟示：少了這個前提，商業計畫再完美也沒用！: http
 你真的知道Retina是什麼嗎？那些蘋果創造出來的技術名詞，你知道多少？: http://www.bnext.com.tw/ext_rss/view/id/985760
 ```
 ### ※ Sample results of get_feeds
+**Get feeds with a structral format**
+
+Note that each element in the array is a `Feed` object, every `Feed` object has several attributes, including:
+
+- `title`: the title of the article
+- `author`: the author of the article
+- `date`: the posted date of the article
+- `content`: the whole content the article contains
+- `tags`: the tags tagged inside the article to be searched
+- `imgs`: all images urls embedded inside the article
+
 ```
 [{
 	:title=>"向網路新金融升級！阿里集團螞蟻金服啟動互聯網推進器計畫", 
@@ -98,12 +128,6 @@ Evernote的啟示：少了這個前提，商業計畫再完美也沒用！: http
 	...
 	...
 }]
-```
-
-## Test the scraper
-
-```
-@ /Team-HW-1-Ideate-and-Scrape/robot/ $ rake
 ```
 
 

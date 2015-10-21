@@ -1,15 +1,31 @@
 #!/usr/bin/env ruby
 require_relative '../lib/ext_class/bnext_robot'
 
-fail ArgumentError, "Usage:  bnext_robot [week/day]\n" if ARGV.count == 0
+fail ArgumentError, "Usage:  bnext_robot [weekrank/dayrank/feed]\n" if ARGV.count == 0
 
 bnext_robot = BNextRobot.new
 
-type = ARGV[0]
-if type == "week"
+function = ARGV[0]
+
+case function
+when 'weekrank'
   bnext_robot.show_week_rank
-elsif type == "day"
+when 'dayrank'
   bnext_robot.show_day_rank
+when 'feed'
+  puts 'Category list:'
+  puts '[網路]: internet  [科技]: tech    [行銷]: marketing'
+  puts '[創業]: startup   [人物]: people  [技能]: skill'
+  print 'Category: '
+  cat = $stdin.readline.chomp  
+  print 'Page number: '
+  page_no = $stdin.readline.chomp
+  feed_found = bnext_robot.get_feeds(cat, page_no)
+  if feed_found.length == 0
+  	puts 'Error: No result found. Check the input or internet connection.'
+  else
+  	puts "#{feed_found}"
+  end
 else
-  puts "Please type week or day"
+  puts "Error: Please insert 'weekrank','dayrank', or 'feed'."
 end
