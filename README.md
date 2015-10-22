@@ -48,29 +48,24 @@ Or else put it in your Gemfile as:
 gem bnext_robot
 ```
 
-###0. Set your working directory
-
-```shell
-cd robot
-```
-
 ###1. Call the class methods
 * Show the week ranking of articles.
 
 ```bash
-bin/bnext_robot weekrank
+bnext_robot weekrank
 ```
 
 * Show the day ranking of articles.
 
 ```shell
-bin/bnext_robot dayrank
+bnext_robot dayrank
 ```
 * Get feeds by selecting categories and page number.
 
 ```shell
-bin/bnext_robot feed
+bnext_robot feed
 ```
+
 
 ### ※ Sample results of show\_day\_rank
 
