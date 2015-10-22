@@ -1,5 +1,5 @@
-$LOAD_PATH.push File.expand_path('../lib', __FILE__)
-require 'ext_class/bnext_version'
+$LOAD_PATH.push File.expand_path('../lib/ext_class', __FILE__)
+require 'bnext_version'
 
 Gem::Specification.new do |s|
   s.name        =  'bnext_robot'
