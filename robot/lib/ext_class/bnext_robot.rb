@@ -91,6 +91,6 @@ class BNextRobot
     content = document.xpath(CONTENT_XPATH).text.force_encoding('utf-8')
     tags = document.xpath(TAG_XPATH).map{ |i| i.text.force_encoding('utf-8') }
     imgs = document.xpath(IMGS_XPATH).map(&:text)
-    Feed.new(title, author, date, tags, query_url, content, imgs).to_hash()
+    Feed.new(title, author, date, tags, query_url, content, imgs)
   end
 end
