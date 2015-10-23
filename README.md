@@ -39,7 +39,7 @@ This is a scraper that collects articles and article-related information from th
 Install it with the following command:
 
 ```
-gem install bnext_robot
+$ gem install bnext_robot
 ```
 
 Or else put it in your Gemfile as:
@@ -48,29 +48,24 @@ Or else put it in your Gemfile as:
 gem bnext_robot
 ```
 
-###0. Set your working directory
-
-```shell
-cd robot
-```
-
 ###1. Call the class methods
 * Show the week ranking of articles.
 
 ```bash
-bin/bnext_robot weekrank
+$ bnext_robot weekrank
 ```
 
 * Show the day ranking of articles.
 
 ```shell
-bin/bnext_robot dayrank
+$ bnext_robot dayrank
 ```
 * Get feeds by selecting categories and page number.
 
 ```shell
-bin/bnext_robot feed
+$ bnext_robot feed
 ```
+
 
 ### ※ Sample results of show\_day\_rank
 
@@ -85,7 +80,7 @@ Evernote的啟示：少了這個前提，商業計畫再完美也沒用！: http
 你真的知道Retina是什麼嗎？那些蘋果創造出來的技術名詞，你知道多少？: http://www.bnext.com.tw/ext_rss/view/id/985760
 ```
 ### ※ Sample results of get_feeds
-**Get feeds with a structral format**
+**Get feeds with the structral format**
 
 Note that each element in the array is a `Feed` object, every `Feed` object has several attributes, including:
 
