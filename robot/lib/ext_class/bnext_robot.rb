@@ -89,8 +89,8 @@ class BNextRobot
     author = document.xpath(INFO_XPATH)[0].text.gsub('撰文者：'.force_encoding('ascii-8bit'), '').force_encoding('utf-8')
     date = document.xpath(INFO_XPATH)[1].text.gsub('發表日期：'.force_encoding('ascii-8bit'), '').force_encoding('utf-8')
     content = document.xpath(CONTENT_XPATH).text.force_encoding('utf-8')
-    tags = document.xpath(TAG_XPATH).map{ |i| i.text.force_encoding('utf-8') }
-    imgs = document.xpath(IMGS_XPATH).map(&:text)
+    tags = document.xpath(TAG_XPATH).map { |i| i.text.force_encoding('utf-8') }
+    imgs = document.xpath(IMGS_XPATH).map { |i| i.text.force_encoding('utf-8') }
     Feed.new(title, author, date, tags, query_url, content, imgs)
   end
 end
