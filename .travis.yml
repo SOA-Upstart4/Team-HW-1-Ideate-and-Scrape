@@ -6,5 +6,3 @@ branches:
   only:
     - dev
     - master
-script:
-  - cd robot && bundle install && rake
