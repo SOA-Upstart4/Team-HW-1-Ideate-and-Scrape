@@ -7,4 +7,5 @@ branches:
     - dev
     - master
 script:
-  - cd robot && bundle install && rake
+  - bundle install
+  - rake
