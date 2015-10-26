@@ -5,7 +5,7 @@ rvm:
 branches:
   only:
   	- dev-hw
-    # - dev
-    # - master
+    - dev
+    - master
 # script:
 #   - cd robot && bundle install && rake
