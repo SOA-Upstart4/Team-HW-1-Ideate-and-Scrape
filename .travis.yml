@@ -7,5 +7,3 @@ branches:
   	- dev-hw
     - dev
     - master
-# script:
-#   - cd robot && bundle install && rake
