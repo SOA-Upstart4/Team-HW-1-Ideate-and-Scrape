@@ -7,5 +7,5 @@ branches:
     - dev
     - master
 scripts:
-	- bundle install
-	- rake
+  - bundle install
+  - rake
