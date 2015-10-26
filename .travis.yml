@@ -4,6 +4,5 @@ rvm:
   - jruby-head
 branches:
   only:
-  	- dev-hw
     - dev
     - master
