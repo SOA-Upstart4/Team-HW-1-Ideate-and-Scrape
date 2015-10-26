@@ -25,8 +25,6 @@ This is a scraper that collects articles and article-related information from th
 │   └── int_module
 │       ├── crawl_runner.rb
 │       └── feeds_filter.rb
-├── robot
-│   └── bnext_robot-0.1.2.gem
 └── spec
     ├── class_spec
     │   └── bnext_robot_spec.rb
