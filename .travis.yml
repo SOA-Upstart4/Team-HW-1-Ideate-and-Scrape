@@ -6,6 +6,6 @@ branches:
   only:
     - dev
     - master
-scripts:
+script:
   - bundle install
   - rake
