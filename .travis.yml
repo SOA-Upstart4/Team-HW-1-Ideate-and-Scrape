@@ -4,7 +4,8 @@ rvm:
   - jruby-head
 branches:
   only:
-    - dev
-    - master
-script:
-  - cd robot && bundle install && rake
+  	- dev-hw
+    # - dev
+    # - master
+# script:
+#   - cd robot && bundle install && rake
