@@ -9,3 +9,7 @@ gem 'xpath'
 gem 'vcr'
 gem 'minitest'
 gem 'webmock'
+
+group :test do
+  gem 'rake'
+end
