@@ -83,7 +83,6 @@ class BNextRobot
   end
 
   def _extract_feed(feed_id)
-    puts "#{feed_id}"
     query_url = @domain[0..-2] + "#{feed_id}"
     document = Oga.parse_html(open(query_url))
     title = nil;
